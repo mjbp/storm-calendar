@@ -18,13 +18,26 @@ export default (year, month) => {
 
     if(prevMonthStartDay){
         while(prevMonthStartDay <= prevMonthEndDay){
-            output.push(prevMonthStartDay);
+            //output.push(prevMonthStartDay);
+            output.push({
+                number: prevMonthStartDay,
+                previousMonth: true
+            });
             prevMonthStartDay++;
         }
     }
-    for(let i = 1; i <= totalDays; i++) output.push(i);
+    for(let i = 1; i <= totalDays; i++) output.push({ number: i });
 
-    if(endDay !== 0) for(let i = 1; i <= (7 - endDay); i++) output.push(i);
+    if(endDay !== 0) for(let i = 1; i <= (7 - endDay); i++) output.push({ number: i, nextMonth: true});
 
     return output;
 };
+
+/*
+    {
+        number: 11,
+        nextMonth: true,
+        previousMonth: false,
+        active: true
+    }
+*/
