@@ -11,6 +11,8 @@ or...
 Math.round(Math.abs((a.getTime() - b.getTime())/(24*60*60*1000)));
 */
 
+export const zeropad = n => `0${n}`.slice(-2);
+
 export const addDays = (date, days) => {
 	let result = new Date(date);
 	result.setDate(result.getDate() + days);
@@ -40,16 +42,16 @@ const monthModel = (year, month) => {
     if(prevMonthStartDay){
         while(prevMonthStartDay <= prevMonthEndDay){
             output.push({
-                number: prevMonthStartDay,
+                number: zeropad(prevMonthStartDay),
 				previousMonth: true,
 				date: new Date(prevMonth.getFullYear(), prevMonth.getMonth(), prevMonthStartDay)
             });
             prevMonthStartDay++;
         }
     }
-    for(let i = 1; i <= totalDays; i++) output.push({ number: i, date: new Date(year, month, i)});
+    for(let i = 1; i <= totalDays; i++) output.push({ number: zeropad(i), date: new Date(year, month, i)});
 
-    if(endDay !== 0) for(let i = 1; i <= (7 - endDay); i++) output.push({ number: i, nextMonth: true, date: new Date(year, month + 1, i)});
+    if(endDay !== 0) for(let i = 1; i <= (7 - endDay); i++) output.push({ number: zeropad(i), nextMonth: true, date: new Date(year, month + 1, i)});
 
     return output;
 };

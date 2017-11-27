@@ -1,6 +1,6 @@
 /**
  * @name storm-calendar: 
- * @version 0.1.0: Sun, 26 Nov 2017 20:20:21 GMT
+ * @version 0.1.0: Mon, 27 Nov 2017 19:42:53 GMT
  * @author stormid
  * @license MIT
  */
@@ -24,6 +24,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 var defaults = {
+	zeropad: true,
 	callback: null
 };
 
@@ -39,6 +40,10 @@ var diffDays = function diffDays(a, b) {
 or...
 Math.round(Math.abs((a.getTime() - b.getTime())/(24*60*60*1000)));
 */
+
+var zeropad = function zeropad(n) {
+	return ('0' + n).slice(-2);
+};
 
 var addDays = function addDays(date, days) {
 	var result = new Date(date);
@@ -68,7 +73,7 @@ var monthModel = function monthModel(year, month) {
 	if (prevMonthStartDay) {
 		while (prevMonthStartDay <= prevMonthEndDay) {
 			output.push({
-				number: prevMonthStartDay,
+				number: zeropad(prevMonthStartDay),
 				previousMonth: true,
 				date: new Date(prevMonth.getFullYear(), prevMonth.getMonth(), prevMonthStartDay)
 			});
@@ -76,9 +81,9 @@ var monthModel = function monthModel(year, month) {
 		}
 	}
 	for (var i = 1; i <= totalDays; i++) {
-		output.push({ number: i, date: new Date(year, month, i) });
+		output.push({ number: zeropad(i), date: new Date(year, month, i) });
 	}if (endDay !== 0) for (var _i = 1; _i <= 7 - endDay; _i++) {
-		output.push({ number: _i, nextMonth: true, date: new Date(year, month + 1, _i) });
+		output.push({ number: zeropad(_i), nextMonth: true, date: new Date(year, month + 1, _i) });
 	}return output;
 };
 
