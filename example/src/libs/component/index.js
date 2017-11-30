@@ -11,7 +11,7 @@ const init = (sel, opts) => {
 		return Object.assign(Object.create(componentPrototype), {
 			node: el,
 			startDate: el.getAttribute('data-start-date') ? new Date(el.getAttribute('data-start-date')) : false,
-			endDate: el.getAttribute('data-end-date') ? new Date(el.getAttribute('data-end-date')) : false,
+			endDate: el.getAttribute('data-end-date') ? new Date(el.getAttribute('data-end-date')) : new Date(el.getAttribute('data-start-date')),
 			settings: Object.assign({}, defaults, opts)
 		}).init();
 	});

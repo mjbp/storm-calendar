@@ -1,6 +1,6 @@
 /**
  * @name storm-calendar: 
- * @version 0.1.0: Fri, 24 Nov 2017 16:50:23 GMT
+ * @version 0.1.0: Thu, 30 Nov 2017 16:21:58 GMT
  * @author stormid
  * @license MIT
  */
@@ -17,7 +17,7 @@ const init = (sel, opts) => {
 		return Object.assign(Object.create(componentPrototype), {
 			node: el,
 			startDate: el.getAttribute('data-start-date') ? new Date(el.getAttribute('data-start-date')) : false,
-			endDate: el.getAttribute('data-end-date') ? new Date(el.getAttribute('data-end-date')) : false,
+			endDate: el.getAttribute('data-end-date') ? new Date(el.getAttribute('data-end-date')) : new Date(el.getAttribute('data-start-date')),
 			settings: Object.assign({}, defaults, opts)
 		}).init();
 	});
