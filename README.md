@@ -1,66 +1,41 @@
-This is a **boilerplate for developing UI components** by **StormId**, used in production in conjunction with our project scaffold.
+# Storm CAlendar
 
-It includes an opinionated JS component boilerplate, build system, test integration, example, README (see below), and deployment, using nodeJS, npm, gulp, mocha, shouldjs, instanbul, babel, travis ci, and codecov.
-
-Before use make sure to grep for “storm-component-boilerplate” and replace every occurrence as well as updating your tests, readme and example.
-
-
----
-
-
-# Component Name
-
-[![Build Status](https://travis-ci.org/mjbp/storm-component-boilerplate.svg?branch=master)](https://travis-ci.org/mjbp/storm-component-boilerplate)
+<!-- [![Build Status](https://travis-ci.org/mjbp/storm-component-boilerplate.svg?branch=master)](https://travis-ci.org/mjbp/storm-component-boilerplate)
 [![codecov.io](http://codecov.io/github/mjbp/storm-component-boilerplate/coverage.svg?branch=master)](http://codecov.io/github/mjbp/storm-component-boilerplate?branch=master)
-[![npm version](https://badge.fury.io/js/storm-component-boilerplate.svg)](https://badge.fury.io/js/storm-component-boilerplate)
+[![npm version](https://badge.fury.io/js/storm-component-boilerplate.svg)](https://badge.fury.io/js/storm-component-boilerplate) -->
 
-One line summary
+
 
 ## Example
-[https://mjbp.github.io/storm-component-boilerplate](https://mjbp.github.io/storm-component-boilerplate)
+<!-- [https://mjbp.github.io/storm-component-boilerplate](https://mjbp.github.io/storm-component-boilerplate) -->
 
 
 ## Usage
 HTML
 ```
-<div class="js-boilerplate"></div>
+<div class="js-calendar" data-start-date="2017-11-30"></div>
 ```
 
 JS
 ```
-npm i -S storm-component-boilerplate
+npm i -S storm-calendar
 ```
 either using es6 import
 ```
-import Boilerplate from 'storm-component-boilerplate';
+import Calendar from 'storm-calendar';
 
-Boilerplate.init('.js-boilerplate');
+Calendar.init('.js-calendar');
 ```
 asynchronous browser loading (use the .standalone version in the /dist folder) using the global name (Storm + capitalised package name)
 ```
 import Load from 'storm-load';
 
-Load('{{path}}/storm-component-boilerplate.standalone.js')
+Load('{{path}}/storm-calendar.standalone.js')
     .then(() => {
-        StormComponentBoilerplate.init('.js-boilerplate');
+        StormCalendar.init('.js-calendar');
     });
 ```
 
-## Options
-```
-{
-    callback: null
-}
-```
-
-e.g.
-```
-Boilerplate.init('.js-selector', {
-    callback(){
-        console.log(this);
-    }
-});
-```
 
 ## Tests
 ```
