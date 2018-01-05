@@ -1,4 +1,3 @@
 export default {
-	zeropad: true,
-	callback: null
+	zeropad: true,//to do - pass through to monthModel
 };

@@ -1,6 +1,6 @@
 /**
  * @name storm-calendar: 
- * @version 0.1.0: Thu, 30 Nov 2017 16:21:59 GMT
+ * @version 0.1.1: Fri, 05 Jan 2018 16:48:55 GMT
  * @author stormid
  * @license MIT
  */
@@ -24,8 +24,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 var defaults = {
-	zeropad: true,
-	callback: null
+	zeropad: true //to do - pass through to monthModel
 };
 
 var diffDays = function diffDays(a, b) {
@@ -53,7 +52,10 @@ var addDays = function addDays(date, days) {
 
 var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-var monthModel = function monthModel(year, month) {
+var monthModel = function monthModel(year, month, _ref) {
+	var min = _ref.min,
+	    max = _ref.max;
+
 	var theMonth = new Date(year, month + 1, 0),
 	    totalDays = theMonth.getDate(),
 	    endDay = theMonth.getDay(),
@@ -74,22 +76,24 @@ var monthModel = function monthModel(year, month) {
 		while (prevMonthStartDay <= prevMonthEndDay) {
 			output.push({
 				number: zeropad(prevMonthStartDay),
-				previousMonth: true,
-				date: new Date(prevMonth.getFullYear(), prevMonth.getMonth(), prevMonthStartDay)
+				previousMonth: true
 			});
 			prevMonthStartDay++;
 		}
 	}
 	for (var i = 1; i <= totalDays; i++) {
-		output.push({ number: zeropad(i), date: new Date(year, month, i) });
-	}if (endDay !== 0) for (var _i = 1; _i <= 7 - endDay; _i++) {
-		output.push({ number: zeropad(_i), nextMonth: true, date: new Date(year, month + 1, _i) });
+		var tmpTimestamp = new Date(year, month, i).getTime();
+		output.push({ number: zeropad(i), active: tmpTimestamp >= min && tmpTimestamp <= max });
+	}
+
+	if (endDay !== 0) for (var _i = 1; _i <= 7 - endDay; _i++) {
+		output.push({ number: zeropad(_i), nextMonth: true });
 	}return output;
 };
 
-var monthViewFactory = function monthViewFactory(day) {
+var monthViewFactory = function monthViewFactory(day, limits) {
 	return {
-		model: monthModel(day.getFullYear(), day.getMonth()),
+		model: monthModel(day.getFullYear(), day.getMonth(), limits),
 		monthTitle: monthNames[day.getMonth()],
 		yearTitle: day.getFullYear()
 	};
@@ -102,29 +106,17 @@ var monthViewExists = function monthViewExists(day) {
 	};
 };
 
-var activateDates = function activateDates(data) {
-	return data.monthViews.map(function (monthView) {
-		return Object.assign({}, monthView, {
-			model: monthView.model.map(function (dayModel) {
-				return Object.assign({}, dayModel, {
-					active: data.activeDates[dayModel.date.getFullYear()] && data.activeDates[dayModel.date.getFullYear()][monthNames[dayModel.date.getMonth()]] && !!~data.activeDates[dayModel.date.getFullYear()][monthNames[dayModel.date.getMonth()]].indexOf(dayModel.number)
-				});
-			})
-		});
-	});
-};
-
 var calendar = function calendar(props) {
-	return '<div class="rd-container" style="display: inline-block;">\n                                    <div class="rd-date">\n                                        <div class="rd-month">\n                                            <button class="rd-back js-calendar__back" type="button"></button>\n                                            <button class="rd-next js-calendar__next" type="button"></button>\n                                            <div class="rd-month-label">' + props.monthTitle + ' ' + props.yearTitle + '</div>\n                                            <table class="rd-days">\n                                                <thead class="rd-days-head">\n                                                    <tr class="rd-days-row">\n                                                        <th class="rd-day-head">Mo</th>\n                                                        <th class="rd-day-head">Tu</th>\n                                                        <th class="rd-day-head">We</th>\n                                                        <th class="rd-day-head">Th</th>\n                                                        <th class="rd-day-head">Fr</th>\n                                                        <th class="rd-day-head">Sa</th>\n                                                        <th class="rd-day-head">Su</th>\n                                                    </tr>\n                                                </thead>\n                                                <tbody class="rd-days-body">\n                                                    <!--<tr class="rd-days-row">\n                                                        <td class="rd-day-body rd-day-prev-month rd-day-disabled">30</td>\n                                                        <td class="rd-day-body rd-day-prev-month rd-day-disabled">31</td>\n                                                        <td class="rd-day-body rd-day-disabled">01</td>\n                                                        <td class="rd-day-body rd-day-disabled">02</td>\n                                                        <td class="rd-day-body rd-day-disabled">03</td>\n                                                        <td class="rd-day-body rd-day-disabled">04</td>\n                                                        <td class="rd-day-body rd-day-disabled">05</td>\n                                                    </tr>-->\n                                                    ' + props.model.map(weeks(props.active)).join('') + '\n                                                </tbody>\n                                            </table>\n                                        </div>\n                                    </div>\n                                </div>';
+	return '<div class="calendar-container">\n                                    <div class="calendar-date">\n                                        <button class="calendar-back js-calendar__back" type="button"><svg class="sdp-btn__icon" width="19" height="19" viewBox="0 0 1000 1000"><path d="M336.2 274.5l-210.1 210h805.4c13 0 23 10 23 23s-10 23-23 23H126.1l210.1 210.1c11 11 11 21 0 32-5 5-10 7-16 7s-11-2-16-7l-249.1-249c-11-11-11-21 0-32l249.1-249.1c21-21.1 53 10.9 32 32z"></path></svg></button>\n                                        <button class="calendar-next js-calendar__next" type="button"><svg class="sdp-btn__icon" width="19" height="19" viewBox="0 0 1000 1000"><path d="M694.4 242.4l249.1 249.1c11 11 11 21 0 32L694.4 772.7c-5 5-10 7-16 7s-11-2-16-7c-11-11-11-21 0-32l210.1-210.1H67.1c-13 0-23-10-23-23s10-23 23-23h805.4L662.4 274.5c-21-21.1 11-53.1 32-32.1z"></path></svg></button>\n                                        <div class="calendar-month-label">' + props.monthTitle + ' ' + props.yearTitle + '</div>\n                                        <table class="calendar-days">\n                                            <thead class="calendar-days-head">\n                                                <tr class="calendar-days-row">\n                                                    <th class="calendar-day-head">Mo</th>\n                                                    <th class="calendar-day-head">Tu</th>\n                                                    <th class="calendar-day-head">We</th>\n                                                    <th class="calendar-day-head">Th</th>\n                                                    <th class="calendar-day-head">Fr</th>\n                                                    <th class="calendar-day-head">Sa</th>\n                                                    <th class="calendar-day-head">Su</th>\n                                                </tr>\n                                            </thead>\n                                            <tbody class="calendar-days-body">\n                                                ' + props.model.map(weeks(props.active)).join('') + '\n                                            </tbody>\n                                        </table>\n                                    </div>\n                                </div>';
 };
 
 var day = function day(activeDays, props) {
-	return '<td class="rd-day-body ' + (props.nextMonth ? ' rd-day-next-month' : '') + (props.previousMonth ? ' rd-day-prev-month' : '') + (props.active ? ' rd-day-selected' : ' rd-day-disabled') + '">' + props.number + '</td>';
+	return '<td class="calendar-day' + (props.nextMonth ? ' calendar-day-next-month' : '') + (props.previousMonth ? ' calendar-day-prev-month' : '') + (props.active && !props.previousMonth && !props.nextMonth ? ' calendar-day-selected' : ' calendar-day-disabled') + '">' + props.number + '</td>';
 };
 
 var weeks = function weeks(activeDays) {
 	return function (props, i, arr) {
-		if (i === 0) return '<tr class="rd-days-row">' + day(activeDays, props);else if (i === arr.length - 1) return day(activeDays, props) + '</tr>';else if ((i + 1) % 7 === 0) return day(activeDays, props) + '</tr><tr class="rd-days-row">';else return day(activeDays, props);
+		if (i === 0) return '<tr class="calendar-days-row">' + day(activeDays, props);else if (i === arr.length - 1) return day(activeDays, props) + '</tr>';else if ((i + 1) % 7 === 0) return day(activeDays, props) + '</tr><tr class="calendar-days-row">';else return day(activeDays, props);
 	};
 };
 
@@ -133,25 +125,22 @@ var TRIGGER_KEYCODES = [13, 32];
 
 var componentPrototype = {
 	init: function init() {
+		var _this = this;
+
 		var totalDays = diffDays(this.startDate, this.endDate),
 		    eventDateObjects = [];
 
 		for (var i = 0; i <= totalDays; i++) {
 			eventDateObjects.push(addDays(this.startDate, i));
-		}this.data = eventDateObjects.reduce(function (acc, curr) {
+		} //Array.apply(null, new Array(totalDays + 1)).map((item, i) => addDays(this.startDate, i));s
+
+		this.data = eventDateObjects.reduce(function (acc, curr) {
 			var existingMonthIndex = acc.monthViews.length ? acc.monthViews.reduce(monthViewExists(curr), -1) : false;
-			if (!acc.monthViews.length || existingMonthIndex === -1) acc.monthViews.push(monthViewFactory(curr));
-
-			acc.activeDates[curr.getFullYear()] = acc.activeDates[curr.getFullYear()] || {};
-			if (acc.activeDates[curr.getFullYear()] && acc.activeDates[curr.getFullYear()][monthNames[curr.getMonth()]]) acc.activeDates[curr.getFullYear()][monthNames[curr.getMonth()]].push(curr.getDate());
-			if (!acc.activeDates[curr.getFullYear()][monthNames[curr.getMonth()]]) acc.activeDates[curr.getFullYear()][monthNames[curr.getMonth()]] = [curr.getDate()];
-
+			if (!acc.monthViews.length || existingMonthIndex === -1) acc.monthViews.push(monthViewFactory(curr, { min: _this.startDate.getTime(), max: _this.endDate.getTime() }));
 			return acc;
-		}, { monthViews: [], activeDates: {} });
+		}, { monthViews: [] });
 
 		eventDateObjects = [];
-
-		this.data.monthViews = activateDates(this.data);
 		this.renderView(0);
 
 		return this;
@@ -160,32 +149,32 @@ var componentPrototype = {
 		this.node.innerHTML = calendar(this.data.monthViews[i]);
 		this.manageButtons(i);
 	},
-	enableButton: function enableButton(btn, value) {
-		var _this = this;
-
-		TRIGGER_EVENTS.forEach(function (ev) {
-			btn.addEventListener(ev, function (e) {
-				if (!!e.keyCode && !~TRIGGER_KEYCODES.indexOf(e.keyCode)) return;
-				_this.renderView.call(_this, value);
-			});
-		});
-	},
 	manageButtons: function manageButtons(i) {
+		var _this2 = this;
+
 		var backButton = this.node.querySelector('.js-calendar__back'),
-		    nextButton = this.node.querySelector('.js-calendar__next');
+		    nextButton = this.node.querySelector('.js-calendar__next'),
+		    enableButton = function enableButton(btn, value) {
+			TRIGGER_EVENTS.forEach(function (ev) {
+				btn.addEventListener(ev, function (e) {
+					if (!!e.keyCode && !~TRIGGER_KEYCODES.indexOf(e.keyCode)) return;
+					_this2.renderView.call(_this2, value);
+				});
+			});
+		};
 
 		//urgh...
 		if (i === 0) {
 			backButton.setAttribute('disabled', 'disabled');
-			this.enableButton(nextButton, i + 1);
+			enableButton(nextButton, i + 1);
 		}
 		if (i === this.data.monthViews.length - 1) {
 			nextButton.setAttribute('disabled', 'disabled');
-			this.enableButton(backButton, i - 1);
+			enableButton(backButton, i - 1);
 		}
 		if (i !== 0 && i !== this.data.monthViews.length - 1) {
-			this.enableButton(nextButton, i + 1);
-			this.enableButton(backButton, i - 1);
+			enableButton(nextButton, i + 1);
+			enableButton(backButton, i - 1);
 		}
 	}
 };
