@@ -1,6 +1,6 @@
 /**
  * @name storm-calendar: 
- * @version 0.1.1: Fri, 05 Jan 2018 16:48:55 GMT
+ * @version 0.2.0: Wed, 10 Jan 2018 08:41:56 GMT
  * @author stormid
  * @license MIT
  */

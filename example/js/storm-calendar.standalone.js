@@ -1,6 +1,6 @@
 /**
  * @name storm-calendar: 
- * @version 0.1.1: Fri, 05 Jan 2018 16:48:55 GMT
+ * @version 0.2.0: Wed, 10 Jan 2018 08:41:56 GMT
  * @author stormid
  * @license MIT
  */
@@ -130,6 +130,10 @@ var componentPrototype = {
 		var totalDays = diffDays(this.startDate, this.endDate),
 		    eventDateObjects = [];
 
+		//normalise hour for timestamp comparison
+		this.startDate.setHours(0, 0, 0, 0);
+		this.endDate.setHours(0, 0, 0, 0);
+
 		for (var i = 0; i <= totalDays; i++) {
 			eventDateObjects.push(addDays(this.startDate, i));
 		} //Array.apply(null, new Array(totalDays + 1)).map((item, i) => addDays(this.startDate, i));s
@@ -140,6 +144,7 @@ var componentPrototype = {
 			return acc;
 		}, { monthViews: [] });
 
+		console.log(this.data);
 		eventDateObjects = [];
 		this.renderView(0);
 

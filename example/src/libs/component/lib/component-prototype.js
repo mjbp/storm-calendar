@@ -9,6 +9,10 @@ export default {
 		let totalDays = diffDays(this.startDate, this.endDate),
 			eventDateObjects = [];
 		
+		//normalise hour for timestamp comparison
+		this.startDate.setHours(0,0,0,0);
+		this.endDate.setHours(0,0,0,0);
+
 		for (let i = 0; i <= totalDays; i++) eventDateObjects.push(addDays(this.startDate, i));
 		//Array.apply(null, new Array(totalDays + 1)).map((item, i) => addDays(this.startDate, i));s
 
@@ -18,6 +22,7 @@ export default {
 				return acc;
 			}, { monthViews: []});
 			
+		console.log(this.data);
 		eventDateObjects = [];
 		this.renderView(0);
 		
